@@ -1,14 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getSection, getQuestionsBySection } from '@/lib/db';
 import type { Section, Question } from '@/lib/db';
 
 export default function PracticePlayer() {
   const params = useParams();
-  const router = useRouter();
 
   const sectionId = params.section as string;
   const roundType = params.roundType as string;

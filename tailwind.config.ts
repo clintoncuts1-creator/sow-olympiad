@@ -8,17 +8,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "ink-navy": "#1a1d2e",
-        "ink-slate": "#3d3f4d",
-        "marigold": "#f5a623",
-        "sage": "#7cb342",
-        "coral": "#ff6b6b",
-        "sky": "#4db8ff",
+        // Primary colors
+        "ink-navy": "#14213D",
+        "graph-paper": "#F5F7FB",
+        "marigold": "#F4A73B",
+        "coral-flare": "#FF6B5B",
+        "leaf-green": "#4CAF7D",
+        "deep-violet": "#6C4EE3",
+        // Section tier colors
+        "sprout-green": "#4CAF7D",
+        "explorer-teal": "#3FA79A",
+        "calculator-blue": "#3E8FC4",
+        "problem-violet": "#6C4EE3",
+        "algebra-magenta": "#C2478C",
+        "master-gold": "#F4A73B",
       },
       fontFamily: {
-        "space-grotesk": ["Space Grotesk", "sans-serif"],
-        "inter": ["Inter", "sans-serif"],
-        "ibm-plex-mono": ["IBM Plex Mono", "monospace"],
+        "display": ["Space Grotesk", "sans-serif"],
+        "body": ["Inter", "sans-serif"],
+        "mono": ["IBM Plex Mono", "monospace"],
       },
     },
   },

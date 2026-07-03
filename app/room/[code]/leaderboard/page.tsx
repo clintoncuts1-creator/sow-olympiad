@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getRoomByCode, getRoomLeaderboard, getRoomParticipants } from '@/lib/db';
+import { getRoomByCode, getRoomLeaderboard } from '@/lib/db';
 import { supabase } from '@/lib/supabase';
 import type { Room, RoomParticipant } from '@/lib/db';
 
@@ -16,7 +16,6 @@ export default function LiveLeaderboard() {
   const [certificateIds, setCertificateIds] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [roundEnded, setRoundEnded] = useState(false);
 
   useEffect(() => {
     const loadLeaderboard = async () => {
@@ -27,7 +26,6 @@ export default function LiveLeaderboard() {
         return;
       }
       setRoom(roomData);
-      setRoundEnded(roomData.status === 'completed');
 
       // Load leaderboard
       const leaderboardData = await getRoomLeaderboard(roomData.id);
@@ -49,7 +47,7 @@ export default function LiveLeaderboard() {
         setCertificateIds(certMap);
       }
 
-      // If round is not completed, try to end it and create certificates
+      // If round is active, try to end it and create certificates
       if (roomData.status === 'active') {
         try {
           const res = await fetch(`/api/rooms/${code}/end-round`, {
@@ -59,13 +57,21 @@ export default function LiveLeaderboard() {
           });
 
           if (res.ok) {
-            const data = await res.json();
-            const newCertMap = { ...certMap };
-            data.certificate_ids?.forEach((certId: string) => {
-              // Map certificate ID to participant ID (we'll need to refetch to get exact mapping)
-            });
-            setCertificateIds(newCertMap);
-            setRoundEnded(true);
+            // Refetch certificates after creation
+            const { data: newCerts } = await supabase
+              .from('certificates')
+              .select('id, room_participant_id')
+              .eq('room_id', roomData.id);
+
+            if (newCerts) {
+              const newCertMap: Record<string, string> = {};
+              newCerts.forEach((cert: any) => {
+                if (cert.room_participant_id) {
+                  newCertMap[cert.room_participant_id] = cert.id;
+                }
+              });
+              setCertificateIds(newCertMap);
+            }
           }
         } catch (err) {
           console.error('Failed to end round:', err);
@@ -83,7 +89,7 @@ export default function LiveLeaderboard() {
             table: 'room_participants',
             filter: `room_id=eq.${roomData.id}`,
           },
-          (payload) => {
+          (_payload) => {
             getRoomLeaderboard(roomData.id).then(setLeaderboard);
           }
         )

@@ -1,15 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAllSections, createRoom } from '@/lib/db';
 import { supabase } from '@/lib/supabase';
 import type { Section, Room } from '@/lib/db';
 
 export default function HostPanel() {
-  const router = useRouter();
-
   const [sections, setSections] = useState<Section[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [selectedSection, setSelectedSection] = useState('');
@@ -47,7 +44,7 @@ export default function HostPanel() {
             schema: 'public',
             table: 'rooms',
           },
-          (payload) => {
+          (_payload) => {
             // Reload rooms
             supabase
               .from('rooms')

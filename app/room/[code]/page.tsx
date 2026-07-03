@@ -16,7 +16,6 @@ export default function RoomLobby() {
   const [participants, setParticipants] = useState<RoomParticipant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const loadRoom = async () => {
@@ -43,7 +42,7 @@ export default function RoomLobby() {
             table: 'room_participants',
             filter: `room_id=eq.${roomData.id}`,
           },
-          (payload) => {
+          (_payload) => {
             // Reload participants on any change
             getRoomParticipants(roomData.id).then(setParticipants);
           }

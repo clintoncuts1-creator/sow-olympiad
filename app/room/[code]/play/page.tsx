@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getRoomByCode, getRoomParticipants, getQuestionsBySection } from '@/lib/db';
@@ -60,7 +60,7 @@ export default function LiveRoundPlayer() {
             table: 'room_participants',
             filter: `room_id=eq.${roomData.id}`,
           },
-          (payload) => {
+          () => {
             getRoomParticipants(roomData.id).then(setParticipants);
           }
         )

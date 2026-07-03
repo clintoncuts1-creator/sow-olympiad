@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/@tabler/icons@latest/tabler-icons.min.css");
 
 @tailwind base;
 @tailwind components;
@@ -13,7 +14,8 @@ html {
 }
 
 body {
-  @apply bg-white text-ink-navy font-inter;
+  @apply bg-graph-paper text-ink-navy;
+  font-family: 'Inter', sans-serif;
 }
 
 h1,
@@ -22,12 +24,50 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-space-grotesk;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 code,
 pre {
-  @apply font-ibm-plex-mono;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Accessibility: Focus states */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  @apply outline-2 outline-offset-2 outline-marigold;
+}
+
+input:disabled,
+button:disabled,
+select:disabled,
+textarea:disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+/* Component classes */
+.btn-primary {
+  @apply px-6 py-3 bg-leaf-green text-white font-display font-bold rounded-lg transition-all duration-200 ease-out hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 border-2 border-ink-navy text-ink-navy font-display font-bold rounded-lg transition-all duration-200 ease-out hover:bg-ink-navy hover:text-white active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.input-field {
+  @apply w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none transition-colors duration-200;
+  font-family: 'Inter', sans-serif;
+}
+
+.card {
+  @apply rounded-lg shadow-md transition-all duration-200;
+}
+
+.card:hover {
+  @apply shadow-lg;
 }
 
 /* Animations */
@@ -62,6 +102,15 @@ pre {
   }
 }
 
+@keyframes spin-smooth {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
@@ -70,26 +119,28 @@ pre {
   animation: scoreCountUp 0.5s ease-out;
 }
 
+.animate-scale-up {
+  animation: scaleUp 0.3s ease-out;
+}
+
+.animate-spin-smooth {
+  animation: spin-smooth 1s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 
-  .animate-fade-in {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-
-  .animate-score-update {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-
-  .animate-scale-up {
+  .animate-fade-in,
+  .animate-score-update,
+  .animate-scale-up,
+  .animate-spin-smooth {
     animation: none;
     opacity: 1;
     transform: none;
