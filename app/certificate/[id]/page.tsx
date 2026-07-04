@@ -49,14 +49,27 @@ export default function CertificatePage() {
         return;
       }
 
+      // Make element visible temporarily for capture
+      const originalDisplay = element.style.display;
+      element.style.display = 'block';
+      
+      // Wait a moment for fonts to render
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Generate canvas from HTML
       const canvas = await html2canvas(element, {
-        scale: 1,
+        scale: 2,
         backgroundColor: '#ffffff',
         allowTaint: true,
         useCORS: true,
         logging: false,
+        imageTimeout: 0,
+        windowWidth: 1200,
+        windowHeight: 800,
       } as any);
+
+      // Restore original display
+      element.style.display = originalDisplay;
 
       // Download the PNG
       canvas.toBlob((blob) => {
@@ -78,11 +91,11 @@ export default function CertificatePage() {
         window.URL.revokeObjectURL(url);
 
         setDownloading(false);
-      });
+      }, 'image/png');
     } catch (err) {
-      setError('Failed to download certificate');
+      setError('Failed to download certificate. Please try again.');
       setDownloading(false);
-      console.error(err);
+      console.error('Certificate download error:', err);
     }
   };
 
@@ -224,31 +237,33 @@ function CertificateTemplate({
         backgroundColor: '#ffffff',
         position: 'relative',
         padding: '0',
-        fontFamily: "'Space Grotesk', 'Inter', sans-serif",
-        color: '#1a1d2e',
+        color: '#14213D',
+        boxSizing: 'border-box',
       }}
     >
-      {/* Outer border */}
+      {/* Outer border (navy) */}
       <div
         style={{
           position: 'absolute',
-          top: '10px',
-          left: '10px',
-          right: '10px',
-          bottom: '10px',
-          border: '20px solid #1a1d2e',
+          top: '16px',
+          left: '16px',
+          right: '16px',
+          bottom: '16px',
+          border: '20px solid #14213D',
+          boxSizing: 'border-box',
         }}
       />
 
-      {/* Inner border */}
+      {/* Inner border (marigold) */}
       <div
         style={{
           position: 'absolute',
-          top: '30px',
-          left: '30px',
-          right: '30px',
-          bottom: '30px',
-          border: '6px solid #f5a623',
+          top: '36px',
+          left: '36px',
+          right: '36px',
+          bottom: '36px',
+          border: '6px solid #F4A73B',
+          boxSizing: 'border-box',
         }}
       />
 
@@ -261,22 +276,28 @@ function CertificateTemplate({
           justifyContent: 'center',
           zIndex: 1,
           textAlign: 'center',
-          gap: '12px',
+          gap: '16px',
+          padding: '60px 80px',
+          boxSizing: 'border-box',
         }}
       >
-        <div style={{ fontSize: '60px', fontWeight: 'bold', fontFamily: "'Space Grotesk'" }}>
+        {/* Title */}
+        <div style={{ fontSize: '54px', fontWeight: 'bold', color: '#14213D' }}>
           Certificate of Achievement
         </div>
 
-        <div style={{ fontSize: '20px', fontFamily: "'Inter'", color: '#3d3f4d' }}>
+        {/* Mode */}
+        <div style={{ fontSize: '18px', color: '#666' }}>
           {certificate.mode === 'practice' ? 'Practice Mode' : 'Competition Mode'}
         </div>
 
-        <div style={{ fontSize: '32px', fontWeight: 'bold', fontFamily: "'Space Grotesk'" }}>
+        {/* Section */}
+        <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#14213D', marginTop: '10px' }}>
           {section?.name || 'Math Olympiad'}
         </div>
 
-        <div style={{ fontSize: '18px', fontFamily: "'Inter'", color: '#3d3f4d' }}>
+        {/* Round Type */}
+        <div style={{ fontSize: '16px', color: '#666' }}>
           {certificate.round_type === 'grid'
             ? 'Grid Round'
             : certificate.round_type === 'tiered'
@@ -284,31 +305,28 @@ function CertificateTemplate({
               : 'Speed Sprint'}
         </div>
 
-        <div style={{ fontSize: '18px', fontFamily: "'Inter'", marginTop: '20px' }}>
+        {/* Presented to text */}
+        <div style={{ fontSize: '16px', color: '#666', marginTop: '20px' }}>
           This certificate is proudly presented to
         </div>
 
-        <div style={{ fontSize: '54px', fontWeight: 'bold', fontFamily: "'Space Grotesk'", marginTop: '10px' }}>
+        {/* Recipient Name */}
+        <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#14213D', marginTop: '8px' }}>
           {certificate.recipient_name}
         </div>
 
-        <div style={{ fontSize: '16px', fontFamily: "'Inter'", color: '#3d3f4d', marginTop: '15px' }}>
+        {/* Congratulations text */}
+        <div style={{ fontSize: '14px', color: '#666', marginTop: '12px', maxWidth: '600px' }}>
           for demonstrating exceptional mathematical skill and perseverance
         </div>
 
-        <div
-          style={{
-            fontSize: '44px',
-            fontWeight: 'bold',
-            fontFamily: "'Space Grotesk'",
-            color: '#7cb342',
-            marginTop: '20px',
-          }}
-        >
+        {/* Score */}
+        <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#4CAF7D', marginTop: '24px' }}>
           Score: {certificate.score}
         </div>
 
-        <div style={{ fontSize: '16px', fontFamily: "'Inter'", color: '#3d3f4d', marginTop: '15px' }}>
+        {/* Date */}
+        <div style={{ fontSize: '14px', color: '#666', marginTop: '12px' }}>
           Issued:{' '}
           {new Date(certificate.issued_at).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -318,7 +336,7 @@ function CertificateTemplate({
         </div>
       </div>
 
-      {/* Seal */}
+      {/* Seal (navy circle with gold border) */}
       <div
         style={{
           position: 'absolute',
@@ -327,15 +345,15 @@ function CertificateTemplate({
           width: '100px',
           height: '100px',
           borderRadius: '50%',
-          backgroundColor: '#1a1d2e',
-          border: '3px solid #f5a623',
+          backgroundColor: '#14213D',
+          border: '4px solid #F4A73B',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '28px',
+          fontSize: '32px',
           fontWeight: 'bold',
-          fontFamily: "'Space Grotesk'",
           color: '#ffffff',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
         }}
       >
         SW
@@ -345,11 +363,11 @@ function CertificateTemplate({
       <div
         style={{
           position: 'absolute',
-          bottom: '40px',
+          bottom: '50px',
           left: '100px',
           right: '100px',
           height: '2px',
-          backgroundColor: '#1a1d2e',
+          backgroundColor: '#F4A73B',
         }}
       />
 
@@ -357,16 +375,16 @@ function CertificateTemplate({
       <div
         style={{
           position: 'absolute',
-          bottom: '15px',
+          bottom: '20px',
           left: '0',
           right: '0',
-          fontSize: '14px',
-          fontFamily: "'Inter'",
-          color: '#3d3f4d',
+          fontSize: '13px',
+          color: '#666',
           textAlign: 'center',
+          padding: '0 40px',
         }}
       >
-        © 2026 Seat of Wisdom Math Olympiad • www.seatofwisdom.edu
+        © 2026 Seat of Wisdom Math Olympiad
       </div>
     </div>
   );

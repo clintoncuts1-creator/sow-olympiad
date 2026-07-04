@@ -250,35 +250,35 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-ink-slate">Loading...</p>
+      <div className="min-h-screen bg-graph-paper flex items-center justify-center">
+        <p className="text-ink-navy font-body">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-graph-paper">
       <header className="bg-ink-navy text-white sticky top-0 z-40 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-space-grotesk font-bold">Question Bank</h1>
-          <Link href="/host" className="text-marigold hover:opacity-80 transition">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
+          <h1 className="text-lg sm:text-2xl font-display font-bold truncate">Question Bank</h1>
+          <Link href="/host" className="text-marigold hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body">
             Back to Host
           </Link>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Filters & Actions */}
-        <div className="bg-gray-50 rounded-lg p-8 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="bg-white rounded-lg p-6 sm:p-8 mb-8 shadow-md">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
             <div>
-              <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+              <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                 Section
               </label>
               <select
                 value={selectedSection}
                 onChange={(e) => setSelectedSection(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-sage focus:outline-none"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
               >
                 {sections.map((section) => (
                   <option key={section.id} value={section.id}>
@@ -289,13 +289,13 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
             </div>
 
             <div>
-              <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+              <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                 Round Type
               </label>
               <select
                 value={selectedRound}
                 onChange={(e) => setSelectedRound(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-sage focus:outline-none"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
               >
                 <option value="grid">Grid</option>
                 <option value="tiered">Tiered</option>
@@ -306,7 +306,7 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
             <div className="flex items-end gap-2">
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="flex-1 py-2 bg-sage text-white font-space-grotesk font-bold rounded-lg hover:opacity-90 transition"
+                className="flex-1 py-2 bg-leaf-green text-white font-display font-bold rounded-lg hover:opacity-90 active:scale-95 transition-all text-sm focus-ring"
               >
                 {showAddForm ? 'Cancel' : '+ Add Question'}
               </button>
@@ -315,29 +315,29 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
 
           {/* CSV Import */}
           <div className="border-t border-gray-300 pt-6 mt-6">
-            <p className="font-space-grotesk font-bold text-ink-navy mb-4">Bulk Import (CSV)</p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <label className="flex-1 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-sage transition text-center">
-                <span className="font-inter text-sm">Choose CSV file</span>
+            <p className="font-display font-bold text-ink-navy mb-4 text-sm">Bulk Import (CSV)</p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <label className="flex-1 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-leaf-green transition text-center text-xs sm:text-sm">
+                <span className="font-body">Choose CSV file</span>
                 <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
               </label>
               <button
                 onClick={downloadTemplate}
-                className="px-4 py-2 border-2 border-ink-navy text-ink-navy font-space-grotesk font-bold rounded-lg hover:bg-ink-navy hover:text-white transition whitespace-nowrap"
+                className="px-4 py-2 border-2 border-ink-navy text-ink-navy font-display font-bold rounded-lg hover:bg-ink-navy hover:text-white transition whitespace-nowrap text-sm focus-ring"
               >
                 Download Template
               </button>
             </div>
 
             {csvError && (
-              <div className="mt-4 p-4 bg-red-50 border-l-4 border-coral rounded">
-                <p className="text-coral text-sm whitespace-pre-wrap">{csvError}</p>
+              <div className="mt-4 p-4 bg-coral-flare bg-opacity-10 border-l-4 border-coral-flare rounded">
+                <p className="text-coral-flare text-xs sm:text-sm whitespace-pre-wrap font-body">{csvError}</p>
               </div>
             )}
 
             {csvSuccess && (
-              <div className="mt-4 p-4 bg-green-50 border-l-4 border-sage rounded">
-                <p className="text-sage text-sm font-space-grotesk font-bold">{csvSuccess}</p>
+              <div className="mt-4 p-4 bg-leaf-green bg-opacity-10 border-l-4 border-leaf-green rounded">
+                <p className="text-leaf-green text-sm font-display font-bold">{csvSuccess}</p>
               </div>
             )}
           </div>
@@ -345,25 +345,25 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
 
         {/* Add Question Form */}
         {showAddForm && (
-          <div className="bg-blue-50 rounded-lg p-8 mb-8 border-2 border-sky">
-            <h3 className="text-xl font-space-grotesk font-bold text-ink-navy mb-6">Add New Question</h3>
+          <div className="bg-calculator-blue bg-opacity-10 rounded-lg p-6 sm:p-8 mb-8 border-2 border-calculator-blue">
+            <h3 className="text-lg sm:text-xl font-display font-bold text-ink-navy mb-6">Add New Question</h3>
 
             <form onSubmit={handleAddQuestion} className="space-y-6">
               <div>
-                <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                   Question Content
                 </label>
                 <textarea
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-sage focus:outline-none font-inter"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                   rows={3}
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                  <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                     Answer Type
                   </label>
                   <select
@@ -371,7 +371,7 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
                     onChange={(e) =>
                       setFormData({ ...formData, answer_type: e.target.value as 'mcq' | 'numeric' })
                     }
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                   >
                     <option value="mcq">Multiple Choice</option>
                     <option value="numeric">Numeric</option>
@@ -379,7 +379,7 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
                 </div>
 
                 <div>
-                  <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                  <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                     Difficulty
                   </label>
                   <select
@@ -387,7 +387,7 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
                     onChange={(e) =>
                       setFormData({ ...formData, difficulty_tier: e.target.value as 'easy' | 'medium' | 'hard' })
                     }
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                   >
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -398,68 +398,68 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
 
               {formData.answer_type === 'mcq' ? (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div>
-                      <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                      <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                         Option A
                       </label>
                       <input
                         type="text"
                         value={formData.option_a}
                         onChange={(e) => setFormData({ ...formData, option_a: e.target.value })}
-                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                      <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                         Option B
                       </label>
                       <input
                         type="text"
                         value={formData.option_b}
                         onChange={(e) => setFormData({ ...formData, option_b: e.target.value })}
-                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                      <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                         Option C
                       </label>
                       <input
                         type="text"
                         value={formData.option_c}
                         onChange={(e) => setFormData({ ...formData, option_c: e.target.value })}
-                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                      <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                         Option D
                       </label>
                       <input
                         type="text"
                         value={formData.option_d}
                         onChange={(e) => setFormData({ ...formData, option_d: e.target.value })}
-                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                    <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                       Correct Answer (must match one option)
                     </label>
                     <input
                       type="text"
                       value={formData.correct_answer}
                       onChange={(e) => setFormData({ ...formData, correct_answer: e.target.value })}
-                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                     />
                   </div>
                 </>
               ) : (
                 <div>
-                  <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                  <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                     Correct Answer (numeric)
                   </label>
                   <input
@@ -467,13 +467,13 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
                     step="0.01"
                     value={formData.correct_answer}
                     onChange={(e) => setFormData({ ...formData, correct_answer: e.target.value })}
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-space-grotesk font-bold text-ink-navy mb-2">
+                <label className="block text-xs sm:text-sm font-display font-bold text-ink-navy mb-2">
                   Points
                 </label>
                 <input
@@ -481,13 +481,13 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
                   min="1"
                   value={formData.points}
                   onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) })}
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-leaf-green focus:outline-none font-body transition-colors"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-sage text-white font-space-grotesk font-bold rounded-lg hover:opacity-90 transition"
+                className="w-full py-3 bg-leaf-green text-white font-display font-bold rounded-lg hover:opacity-90 active:scale-95 transition-all focus-ring"
               >
                 Add Question
               </button>
@@ -497,24 +497,24 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
 
         {/* Questions List */}
         <div>
-          <h3 className="text-xl font-space-grotesk font-bold text-ink-navy mb-6">
+          <h3 className="text-lg sm:text-xl font-display font-bold text-ink-navy mb-4 sm:mb-6">
             Questions ({questions.length})
           </h3>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {questions.length === 0 ? (
-              <div className="bg-gray-50 rounded-lg p-8 text-center">
-                <p className="text-ink-slate">No questions for this section and round type</p>
+              <div className="bg-white rounded-lg p-6 sm:p-8 text-center shadow-md">
+                <p className="text-ink-navy font-body opacity-75">No questions for this section and round type</p>
               </div>
             ) : (
               questions.map((question) => (
-                <div key={question.id} className="bg-white rounded-lg shadow p-6 border-l-4 border-sage">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="font-space-grotesk font-bold text-ink-navy mb-2">
+                <div key={question.id} className="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4 border-leaf-green hover:shadow-lg transition-all">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-display font-bold text-ink-navy mb-2 text-sm sm:text-base break-words">
                         {question.content}
                       </p>
-                      <div className="flex gap-4 text-sm text-ink-slate">
+                      <div className="flex gap-3 text-xs sm:text-sm text-ink-navy font-body opacity-75 flex-wrap">
                         <span>{question.answer_type === 'mcq' ? '📋 MCQ' : '🔢 Numeric'}</span>
                         {question.difficulty_tier && <span>{question.difficulty_tier}</span>}
                         <span>{question.points} pts</span>
@@ -522,7 +522,7 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
                     </div>
                     <button
                       onClick={() => handleDeleteQuestion(question.id)}
-                      className="px-3 py-1 bg-red-50 text-coral rounded text-sm font-space-grotesk font-bold hover:bg-red-100 transition"
+                      className="px-3 py-1 bg-coral-flare bg-opacity-10 text-coral-flare rounded text-xs sm:text-sm font-display font-bold hover:bg-opacity-20 active:scale-95 transition-all focus-ring whitespace-nowrap"
                     >
                       Delete
                     </button>

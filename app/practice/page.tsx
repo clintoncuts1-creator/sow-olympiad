@@ -53,84 +53,84 @@ function PracticeSelectorContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-graph-paper">
       {/* Header */}
       <header className="bg-ink-navy text-white sticky top-0 z-40 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Link href="/" className="hover:opacity-80 transition">
-            <h1 className="text-xl sm:text-2xl font-space-grotesk font-bold">
+          <Link href="/" className="text-white hover:opacity-80 transition focus-ring rounded px-2 py-1">
+            <h1 className="text-lg sm:text-xl font-display font-bold">
               Seat of Wisdom
             </h1>
           </Link>
-          <Link href="/" className="text-marigold hover:opacity-80 transition">
+          <Link href="/" className="text-marigold hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm sm:text-base font-body">
             Back Home
           </Link>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         {!sectionId ? (
-          <div className="text-center py-12">
-            <h2 className="text-4xl font-space-grotesk font-bold text-ink-navy mb-4">
+          <div className="text-center py-8 sm:py-12">
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-ink-navy mb-3 sm:mb-4">
               Select a Section
             </h2>
-            <p className="text-lg text-ink-slate mb-8">
+            <p className="text-base sm:text-lg text-ink-navy font-body mb-6 sm:mb-8 opacity-75">
               Choose which math level you want to practice.
             </p>
             <Link
               href="/"
-              className="inline-block px-6 py-3 bg-sage text-white font-space-grotesk font-bold rounded-lg hover:opacity-90 transition"
+              className="inline-block px-6 py-3 bg-leaf-green text-white font-display font-bold rounded-lg hover:opacity-90 active:scale-95 transition-all focus-ring"
             >
               Back to Sections
             </Link>
           </div>
         ) : section ? (
           <div>
-            <div className="mb-12">
+            <div className="mb-8 sm:mb-12">
               <div
-                className="h-32 rounded-lg p-8 text-white flex flex-col justify-between"
+                className="h-28 sm:h-32 rounded-lg p-6 sm:p-8 text-white flex flex-col justify-between"
                 style={{ backgroundColor: section.tier_color }}
               >
                 <div>
-                  <h2 className="text-3xl sm:text-4xl font-space-grotesk font-bold mb-2">
+                  <h2 className="text-2xl sm:text-4xl font-display font-bold mb-1 sm:mb-2">
                     {section.name}
                   </h2>
-                  <p className="text-lg opacity-90">{section.grade_range}</p>
+                  <p className="text-sm sm:text-lg font-body opacity-90">{section.grade_range}</p>
                 </div>
               </div>
             </div>
 
             <div className="mb-8">
-              <h3 className="text-2xl font-space-grotesk font-bold text-ink-navy mb-6">
+              <h3 className="text-xl sm:text-2xl font-display font-bold text-ink-navy mb-4 sm:mb-6">
                 Choose a Round Type
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 {ROUND_TYPES.map((roundType) => (
                   <button
                     key={roundType.id}
                     onClick={() => handleRoundSelect(roundType.id)}
                     onMouseEnter={() => setSelectedRound(roundType.id)}
                     onMouseLeave={() => setSelectedRound(null)}
-                    className={`p-6 rounded-lg border-2 transition-all transform hover:scale-105 text-left ${
+                    className={`p-6 rounded-lg border-2 transition-all transform hover:scale-105 active:scale-95 text-left focus-ring ${
                       selectedRound === roundType.id
-                        ? `border-${roundType.color.split('-')[1]} bg-opacity-10`
+                        ? `border-leaf-green bg-opacity-10`
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <div className="text-5xl mb-4">{roundType.emoji}</div>
-                    <h4 className="text-xl font-space-grotesk font-bold text-ink-navy mb-2">
+                    <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">{roundType.emoji}</div>
+                    <h4 className="text-lg sm:text-xl font-display font-bold text-ink-navy mb-2">
                       {roundType.name}
                     </h4>
-                    <p className="text-sm text-ink-slate">{roundType.description}</p>
+                    <p className="text-xs sm:text-sm text-ink-navy font-body opacity-75">{roundType.description}</p>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="text-center pt-8">
+            <div className="text-center pt-6 sm:pt-8">
               <Link
                 href="/"
-                className="text-ink-slate hover:text-ink-navy transition"
+                className="text-ink-navy hover:text-marigold transition focus-ring rounded px-2 py-1 text-sm sm:text-base font-body"
               >
                 ← Change section
               </Link>
@@ -138,7 +138,7 @@ function PracticeSelectorContent() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-ink-slate">Loading section...</p>
+            <p className="text-ink-navy font-body">Loading section...</p>
           </div>
         )}
       </main>

@@ -1,14 +1,21 @@
 /**
  * Logo Lockup Component
- * Circular monogram badge + wordmark
+ * Uses logo image from public folder + wordmark
  */
 
 export function Logo() {
   return (
     <div className="flex items-center gap-3">
-      {/* Monogram Badge */}
-      <div className="w-12 h-12 rounded-full border-2 border-marigold bg-ink-navy flex items-center justify-center flex-shrink-0">
-        <span className="text-marigold font-display font-bold text-sm">SW</span>
+      {/* Logo Image */}
+      <div className="relative w-12 h-12 flex-shrink-0">
+        {/* Using img tag to avoid Image optimization overhead */}
+        <img
+          src="/logo.jpg"
+          alt="Seat of Wisdom Math Olympiad"
+          width="48"
+          height="48"
+          className="w-full h-full object-cover rounded-full"
+        />
       </div>
 
       {/* Wordmark */}
