@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getAllSections, createRoom } from '@/lib/db';
 import { supabase } from '@/lib/supabase';
 import type { Section, Room } from '@/lib/db';
@@ -15,6 +16,7 @@ export default function HostPanel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const loadData = async () => {
@@ -65,6 +67,15 @@ export default function HostPanel() {
     loadData();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/host/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
+
   const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -110,9 +121,17 @@ export default function HostPanel() {
       <header className="bg-ink-navy text-white sticky top-0 z-40 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
           <h1 className="text-lg sm:text-2xl font-display font-bold truncate">Host Panel</h1>
-          <Link href="/" className="text-marigold hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body">
-            Back Home
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="text-marigold hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body">
+              Back Home
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="text-coral-flare hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 

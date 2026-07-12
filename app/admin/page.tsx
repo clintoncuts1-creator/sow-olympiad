@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getAllSections, getQuestionsBySection } from '@/lib/db';
 import { supabase } from '@/lib/supabase';
 import type { Section, Question } from '@/lib/db';
@@ -15,6 +16,7 @@ export default function AdminQuestionBank() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [csvError, setCsvError] = useState('');
   const [csvSuccess, setCsvSuccess] = useState('');
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     content: '',
@@ -34,12 +36,24 @@ export default function AdminQuestionBank() {
       setSections(sectionsData);
       if (sectionsData.length > 0) {
         setSelectedSection(sectionsData[0].id);
+      } else {
+        // Show helpful message if no sections
+        console.warn('No sections found. Please seed the database with sample data.');
       }
       setLoading(false);
     };
 
     loadSections();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/admin/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
 
   useEffect(() => {
     if (selectedSection) {
@@ -256,14 +270,57 @@ Rising Maths Explorers,sprint,,Solve for x: x + 5 = 12,numeric,,,,,7,1`;
     );
   }
 
+  if (sections.length === 0) {
+    return (
+      <div className="min-h-screen bg-graph-paper">
+        <header className="bg-ink-navy text-white sticky top-0 z-40 shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
+            <h1 className="text-lg sm:text-2xl font-display font-bold truncate">Question Bank</h1>
+            <div className="flex items-center gap-3">
+              <Link href="/host" className="text-marigold hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body">
+                Back to Host
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-coral-flare hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </header>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p className="text-yellow-800 font-display font-bold text-lg mb-2">No Sections Found</p>
+            <p className="text-yellow-700 font-body mb-4">
+              The database needs to be seeded with sample sections and questions. 
+              Please run the seed.sql script in your Supabase database.
+            </p>
+            <p className="text-yellow-700 font-body text-sm">
+              Navigate to Supabase SQL Editor and run: <code className="bg-yellow-100 px-2 py-1 rounded">supabase/seed.sql</code>
+            </p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-graph-paper">
       <header className="bg-ink-navy text-white sticky top-0 z-40 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
           <h1 className="text-lg sm:text-2xl font-display font-bold truncate">Question Bank</h1>
-          <Link href="/host" className="text-marigold hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body">
-            Back to Host
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/host" className="text-marigold hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body">
+              Back to Host
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="text-coral-flare hover:opacity-80 transition focus-ring rounded px-2 py-1 text-sm font-body"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
