@@ -8,6 +8,9 @@ import { Logo } from '@/components/Logo';
 import { getIconComponent } from '@/lib/iconMap';
 import type { Section } from '@/lib/db';
 
+// Feature flag: temporarily disable room/competition features
+const IS_ROOM_FEATURE_ENABLED = false;
+
 // Background patterns - 5 math-themed patterns per design.md
 const PATTERN_DATA = [
   // 1. Graph Paper - fine grid lines
@@ -168,12 +171,28 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
           <Logo />
           <nav className="flex gap-2 sm:gap-4 items-center">
-            <Link 
-              href="/join" 
-              className="text-xs sm:text-sm text-ink-navy font-body hover:text-marigold transition focus-ring rounded px-2 sm:px-3 py-2"
-            >
-              Join room
-            </Link>
+            {IS_ROOM_FEATURE_ENABLED ? (
+              <Link 
+                href="/join" 
+                className="text-xs sm:text-sm text-ink-navy font-body hover:text-marigold transition focus-ring rounded px-2 sm:px-3 py-2"
+              >
+                Join room
+              </Link>
+            ) : (
+              <div 
+                className="text-xs sm:text-sm text-ink-navy font-body rounded px-2 sm:px-3 py-2 relative group cursor-not-allowed"
+                style={{ opacity: 0.45, filter: 'grayscale(60%)', pointerEvents: 'none' }}
+                tabIndex={-1}
+                role="status"
+                aria-label="Join room - coming soon"
+              >
+                Join room
+                {/* Tooltip on hover */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-ink-navy text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  Coming soon
+                </div>
+              </div>
+            )}
             <Link 
               href="/admin" 
               className="text-xs sm:text-sm text-ink-navy font-body hover:text-marigold transition focus-ring rounded px-2 sm:px-3 py-2"
@@ -336,12 +355,28 @@ export default function Home() {
             >
               Start practicing
             </Link>
-            <Link
-              href="/join"
-              className="px-6 sm:px-8 py-3 border-2 border-ink-navy text-ink-navy font-display font-bold rounded-lg hover:bg-ink-navy hover:text-white active:scale-95 transition-all duration-200 focus-ring text-sm sm:text-base"
-            >
-              Enter competition room
-            </Link>
+            {IS_ROOM_FEATURE_ENABLED ? (
+              <Link
+                href="/join"
+                className="px-6 sm:px-8 py-3 border-2 border-ink-navy text-ink-navy font-display font-bold rounded-lg hover:bg-ink-navy hover:text-white active:scale-95 transition-all duration-200 focus-ring text-sm sm:text-base"
+              >
+                Enter competition room
+              </Link>
+            ) : (
+              <div
+                className="relative group px-6 sm:px-8 py-3 border-2 border-ink-navy text-ink-navy font-display font-bold rounded-lg text-sm sm:text-base cursor-not-allowed"
+                style={{ opacity: 0.45, filter: 'grayscale(60%)', pointerEvents: 'none' }}
+                tabIndex={-1}
+                role="status"
+                aria-label="Enter competition room - coming soon"
+              >
+                Enter competition room
+                {/* Tooltip on hover */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-ink-navy text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                  Coming soon
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
