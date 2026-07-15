@@ -1,4 +1,5 @@
-import { supabase } from "./supabase";
+import { supabase, supabaseServer } from "./supabase";
+import bcryptjs from "bcryptjs";
 
 // Types - CLIENT-SAFE (NO correct_answer exposed)
 export interface Section {
@@ -295,7 +296,7 @@ export async function getCertificate(id: string): Promise<Certificate | null> {
 // NEVER call these from client-side code
 
 export async function getAdminPasswordHash(): Promise<string | null> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseServer
     .from("admin_credentials")
     .select("password_hash")
     .limit(1)
@@ -309,9 +310,7 @@ export async function verifyAdminPassword(plaintext: string): Promise<boolean> {
     const hash = await getAdminPasswordHash();
     if (!hash) return false;
 
-    // Dynamic import for bcryptjs
-    const bcrypt = require("bcryptjs");
-    return await bcrypt.compare(plaintext, hash);
+    return await bcryptjs.compare(plaintext, hash);
   } catch (error) {
     console.error("verifyAdminPassword error:", error);
     return false;
