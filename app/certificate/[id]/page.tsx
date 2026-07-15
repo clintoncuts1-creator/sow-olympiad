@@ -65,7 +65,7 @@ export default function CertificatePage() {
         logging: false,
         imageTimeout: 0,
         windowWidth: 1200,
-        windowHeight: 800,
+        windowHeight: 900,
       } as any);
 
       // Restore original display
@@ -225,166 +225,477 @@ function CertificateTemplate({
   certificate: Certificate;
   section: Section | null;
 }) {
+  // Get tier color for recipient name and badge
+  const tierColorMap: Record<string, string> = {
+    'Little Maths Sprout': '#4CAF7D',
+    'Rising Maths Explorers': '#3FA79A',
+    'Clever Calculators': '#3E8FC4',
+    'Elite Problem Solvers': '#6C4EE3',
+    'Algebra Warriors': '#C2478C',
+    'Grand Maths Master League': '#F4A73B',
+  };
+  
+  const sectionName = section?.name || 'Math Olympiad';
+  const tierColor = tierColorMap[sectionName] || '#14213D';
+
+  // Determine rank for competition mode
+  const getRankDisplay = () => {
+    if (certificate.mode === 'practice') {
+      return { label: 'Practice complete', icon: '✓' };
+    }
+    
+    // For competition mode, we need to check if it's a top-3 finisher
+    // This would require additional data, so we'll use a placeholder
+    // In a real scenario, you'd pass rank data from the database
+    return { label: 'Participant', icon: '⭐' };
+  };
+
+  const rank = getRankDisplay();
+
+  // Round type display name
+  const roundTypeDisplay =
+    certificate.round_type === 'grid'
+      ? 'Grid Round'
+      : certificate.round_type === 'tiered'
+        ? 'Tiered Round'
+        : 'Speed Sprint';
+
+  // Date formatting
+  const issueDate = new Date(certificate.issued_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   return (
     <div
       style={{
         width: '1200px',
-        height: '800px',
+        height: '900px',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#ffffff',
         position: 'relative',
-        padding: '0',
         color: '#14213D',
         boxSizing: 'border-box',
+        fontFamily: 'Arial, sans-serif',
       }}
     >
       {/* Outer border (navy) */}
       <div
         style={{
           position: 'absolute',
-          top: '16px',
-          left: '16px',
-          right: '16px',
-          bottom: '16px',
-          border: '20px solid #14213D',
+          top: '20px',
+          left: '20px',
+          right: '20px',
+          bottom: '20px',
+          border: '8px solid #14213D',
           boxSizing: 'border-box',
+          pointerEvents: 'none',
         }}
       />
 
-      {/* Inner border (marigold) */}
+      {/* Inner accent border (marigold) */}
       <div
         style={{
           position: 'absolute',
-          top: '36px',
-          left: '36px',
-          right: '36px',
-          bottom: '36px',
-          border: '6px solid #F4A73B',
+          top: '28px',
+          left: '28px',
+          right: '28px',
+          bottom: '28px',
+          border: '2px solid #F4A73B',
           boxSizing: 'border-box',
+          pointerEvents: 'none',
         }}
       />
 
-      {/* Content */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1,
-          textAlign: 'center',
-          gap: '16px',
-          padding: '60px 80px',
-          boxSizing: 'border-box',
-        }}
-      >
-        {/* Title */}
-        <div style={{ fontSize: '54px', fontWeight: 'bold', color: '#14213D' }}>
-          Certificate of Achievement
-        </div>
-
-        {/* Mode */}
-        <div style={{ fontSize: '18px', color: '#666' }}>
-          {certificate.mode === 'practice' ? 'Practice Mode' : 'Competition Mode'}
-        </div>
-
-        {/* Section */}
-        <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#14213D', marginTop: '10px' }}>
-          {section?.name || 'Math Olympiad'}
-        </div>
-
-        {/* Round Type */}
-        <div style={{ fontSize: '16px', color: '#666' }}>
-          {certificate.round_type === 'grid'
-            ? 'Grid Round'
-            : certificate.round_type === 'tiered'
-              ? 'Tiered Round'
-              : 'Speed Sprint'}
-        </div>
-
-        {/* Presented to text */}
-        <div style={{ fontSize: '16px', color: '#666', marginTop: '20px' }}>
-          This certificate is proudly presented to
-        </div>
-
-        {/* Recipient Name */}
-        <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#14213D', marginTop: '8px' }}>
-          {certificate.recipient_name}
-        </div>
-
-        {/* Congratulations text */}
-        <div style={{ fontSize: '14px', color: '#666', marginTop: '12px', maxWidth: '600px' }}>
-          for demonstrating exceptional mathematical skill and perseverance
-        </div>
-
-        {/* Score */}
-        <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#4CAF7D', marginTop: '24px' }}>
-          Score: {certificate.score}
-        </div>
-
-        {/* Date */}
-        <div style={{ fontSize: '14px', color: '#666', marginTop: '12px' }}>
-          Issued:{' '}
-          {new Date(certificate.issued_at).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </div>
-      </div>
-
-      {/* Seal (navy circle with gold border) */}
+      {/* Top-left logo seal */}
       <div
         style={{
           position: 'absolute',
-          bottom: '80px',
-          right: '80px',
-          width: '100px',
-          height: '100px',
+          top: '40px',
+          left: '40px',
+          width: '90px',
+          height: '90px',
           borderRadius: '50%',
           backgroundColor: '#14213D',
-          border: '4px solid #F4A73B',
+          border: '3px solid #F4A73B',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '32px',
+          fontSize: '28px',
           fontWeight: 'bold',
-          color: '#ffffff',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          color: '#F4A73B',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          zIndex: 10,
         }}
       >
         SW
       </div>
 
-      {/* Footer line */}
+      {/* Top-right logo seal */}
       <div
         style={{
           position: 'absolute',
-          bottom: '50px',
-          left: '100px',
-          right: '100px',
-          height: '2px',
-          backgroundColor: '#F4A73B',
+          top: '40px',
+          right: '40px',
+          width: '90px',
+          height: '90px',
+          borderRadius: '50%',
+          backgroundColor: '#14213D',
+          border: '3px solid #F4A73B',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '28px',
+          fontWeight: 'bold',
+          color: '#F4A73B',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          zIndex: 10,
+        }}
+      >
+        SW
+      </div>
+
+      {/* Header section */}
+      <div
+        style={{
+          textAlign: 'center',
+          paddingTop: '60px',
+          paddingBottom: '20px',
+          position: 'relative',
+          zIndex: 5,
+        }}
+      >
+        {/* School name */}
+        <div
+          style={{
+            fontSize: '26px',
+            fontWeight: 'bold',
+            color: '#14213D',
+            letterSpacing: '0.5px',
+            marginBottom: '4px',
+            fontFamily: 'Georgia, serif',
+          }}
+        >
+          SEAT OF WISDOM GROUP OF SCHOOLS
+        </div>
+
+        {/* Motto */}
+        <div
+          style={{
+            fontSize: '13px',
+            color: '#999',
+            letterSpacing: '1px',
+            marginBottom: '16px',
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          EXCELLENCE · KNOWLEDGE · CHARACTER
+        </div>
+      </div>
+
+      {/* Divider line with diamond */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '12px',
+          paddingLeft: '60px',
+          paddingRight: '60px',
+          marginBottom: '16px',
+          position: 'relative',
+          zIndex: 5,
+        }}
+      >
+        <div style={{ flex: 1, height: '1px', backgroundColor: '#14213D' }} />
+        <div
+          style={{
+            width: '10px',
+            height: '10px',
+            backgroundColor: '#F4A73B',
+            transform: 'rotate(45deg)',
+          }}
+        />
+        <div style={{ flex: 1, height: '1px', backgroundColor: '#14213D' }} />
+      </div>
+
+      {/* Multi-color accent band */}
+      <div
+        style={{
+          height: '4px',
+          background: 'linear-gradient(to right, #4CAF7D, #6C4EE3, #FF6B5B, #F4A73B)',
+          marginBottom: '20px',
+          position: 'relative',
+          zIndex: 5,
         }}
       />
 
-      {/* Footer text */}
+      {/* Main content area */}
       <div
         style={{
-          position: 'absolute',
-          bottom: '20px',
-          left: '0',
-          right: '0',
-          fontSize: '13px',
-          color: '#666',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingLeft: '80px',
+          paddingRight: '80px',
+          paddingTop: '10px',
+          paddingBottom: '40px',
           textAlign: 'center',
-          padding: '0 40px',
+          position: 'relative',
+          zIndex: 5,
+          overflow: 'hidden',
         }}
       >
-        © 2026 Seat of Wisdom Math Olympiad
+        {/* Main title - with responsive sizing */}
+        <div
+          style={{
+            fontSize: '48px',
+            fontWeight: 'bold',
+            color: '#14213D',
+            marginBottom: '8px',
+            maxWidth: '100%',
+            wordWrap: 'break-word',
+            lineHeight: '1.2',
+            fontFamily: 'Georgia, serif',
+          }}
+        >
+          CERTIFICATE OF ACHIEVEMENT
+        </div>
+
+        {/* Section subtitle */}
+        <div
+          style={{
+            fontSize: '18px',
+            color: '#14213D',
+            marginBottom: '16px',
+            fontWeight: '600',
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          MATH OLYMPIAD — {sectionName.toUpperCase()}
+        </div>
+
+        {/* Italic intro line */}
+        <div
+          style={{
+            fontSize: '14px',
+            fontStyle: 'italic',
+            color: '#666',
+            marginBottom: '12px',
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          This is to certify that
+        </div>
+
+        {/* Recipient name - colored by tier */}
+        <div
+          style={{
+            fontSize: '42px',
+            fontWeight: 'bold',
+            color: tierColor,
+            marginBottom: '16px',
+            maxWidth: '100%',
+            wordWrap: 'break-word',
+            fontFamily: 'Georgia, serif',
+          }}
+        >
+          {certificate.recipient_name}
+        </div>
+
+        {/* Badge pill */}
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            backgroundColor: `${tierColor}20`,
+            border: `2px solid ${tierColor}`,
+            borderRadius: '20px',
+            paddingLeft: '12px',
+            paddingRight: '12px',
+            paddingTop: '6px',
+            paddingBottom: '6px',
+            marginBottom: '16px',
+            fontSize: '13px',
+            fontWeight: '600',
+            color: tierColor,
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          <span>{rank.icon}</span>
+          <span>{rank.label}</span>
+        </div>
+
+        {/* Accomplishment text */}
+        <div
+          style={{
+            fontSize: '13px',
+            color: '#666',
+            marginBottom: '8px',
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          has demonstrated outstanding mathematical skill and achieved
+        </div>
+
+        {/* Score display */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'center',
+            gap: '6px',
+            marginBottom: '8px',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 'bold',
+              color: '#14213D',
+              fontFamily: 'monospace',
+            }}
+          >
+            {certificate.score}
+          </div>
+          <div
+            style={{
+              fontSize: '14px',
+              color: '#666',
+              fontFamily: 'monospace',
+            }}
+          >
+            /20
+          </div>
+        </div>
+
+        {/* Round type line */}
+        <div
+          style={{
+            fontSize: '13px',
+            color: '#666',
+            marginBottom: '12px',
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          in the <span style={{ fontWeight: 'bold', color: '#14213D' }}>{roundTypeDisplay}</span> Round
+        </div>
+      </div>
+
+      {/* Bottom divider */}
+      <div
+        style={{
+          height: '1px',
+          backgroundColor: '#14213D',
+          marginLeft: '80px',
+          marginRight: '80px',
+          position: 'relative',
+          zIndex: 5,
+        }}
+      />
+
+      {/* Footer section with signature lines */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: '40px',
+          padding: '24px 80px',
+          position: 'relative',
+          zIndex: 5,
+        }}
+      >
+        {/* Left signature line */}
+        <div style={{ textAlign: 'center' }}>
+          <div
+            style={{
+              height: '1px',
+              backgroundColor: '#14213D',
+              marginBottom: '4px',
+            }}
+          />
+          <div
+            style={{
+              fontSize: '11px',
+              color: '#666',
+              fontFamily: 'Arial, sans-serif',
+            }}
+          >
+            Host / Teacher
+          </div>
+        </div>
+
+        {/* Center date */}
+        <div style={{ textAlign: 'center' }}>
+          <div
+            style={{
+              fontSize: '12px',
+              color: '#14213D',
+              marginBottom: '4px',
+              fontFamily: 'monospace',
+            }}
+          >
+            {issueDate}
+          </div>
+          <div
+            style={{
+              fontSize: '11px',
+              color: '#666',
+              fontFamily: 'Arial, sans-serif',
+            }}
+          >
+            Date
+          </div>
+        </div>
+
+        {/* Right signature line */}
+        <div style={{ textAlign: 'center' }}>
+          <div
+            style={{
+              height: '1px',
+              backgroundColor: '#14213D',
+              marginBottom: '4px',
+            }}
+          />
+          <div
+            style={{
+              fontSize: '11px',
+              color: '#666',
+              fontFamily: 'Arial, sans-serif',
+            }}
+          >
+            Principal
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative bottom accent marks */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '12px',
+          paddingBottom: '12px',
+          position: 'relative',
+          zIndex: 5,
+        }}
+      >
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            style={{
+              width: '6px',
+              height: '6px',
+              backgroundColor: '#F4A73B',
+              borderRadius: '50%',
+            }}
+          />
+        ))}
       </div>
     </div>
   );
