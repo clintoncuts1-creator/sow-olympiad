@@ -1,4 +1,4 @@
-import { supabase, getServerSupabase } from "./supabase";
+import { supabase } from "./supabase";
 
 // Types - CLIENT-SAFE (NO correct_answer exposed)
 export interface Section {
