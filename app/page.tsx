@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getAllSections } from '@/lib/db';
 import { supabase } from '@/lib/supabase';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
+import { SectionGrid } from '@/components/SectionGrid';
 import { getIconComponent } from '@/lib/iconMap';
 import type { Section } from '@/lib/db';
 
@@ -32,9 +33,7 @@ export default function Home() {
   const [sections, setSections] = useState<Section[]>([]);
   const [patternIndex, setPatternIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [stats, setStats] = useState({ totalCertificates: 0, activeRooms: 0, weeklyPractice: 0 });
-  const headerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -109,15 +108,7 @@ export default function Home() {
     };
   }, []);
 
-  // Scroll handler for sticky header with frosted effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   if (!mounted) return null;
 
@@ -125,49 +116,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header - Sticky with frosted glass effect on scroll */}
-      <header 
-        ref={headerRef}
-        className={`sticky top-0 z-50 transition-all duration-200 ${
-          scrolled 
-            ? 'bg-white/85 backdrop-blur-lg border-b border-gray-200' 
-            : 'bg-white border-b border-gray-100'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
-          <Logo />
-          <nav className="flex gap-2 sm:gap-4 items-center">
-            {IS_ROOM_FEATURE_ENABLED ? (
-              <Link 
-                href="/join" 
-                className="text-xs sm:text-sm text-ink-navy font-body hover:text-marigold transition focus-ring rounded px-2 sm:px-3 py-2"
-              >
-                Join room
-              </Link>
-            ) : (
-              <div 
-                className="text-xs sm:text-sm text-ink-navy font-body rounded px-2 sm:px-3 py-2 relative group cursor-not-allowed"
-                style={{ opacity: 0.45, filter: 'grayscale(60%)', pointerEvents: 'none' }}
-                tabIndex={-1}
-                role="status"
-                aria-label="Join room - coming soon"
-              >
-                Join room
-                {/* Tooltip on hover */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-ink-navy text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                  Coming soon
-                </div>
-              </div>
-            )}
-            <Link 
-              href="/admin" 
-              className="text-xs sm:text-sm text-ink-navy font-body hover:text-marigold transition focus-ring rounded px-2 sm:px-3 py-2"
-            >
-              Admin
-            </Link>
-          </nav>
-        </div>
-      </header>
+      {/* Shared Header */}
+      <Header />
 
       {/* Hero Section with Dynamic Background Pattern */}
       <section 
