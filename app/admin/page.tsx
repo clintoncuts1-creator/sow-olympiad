@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getAllSections, getQuestionsBySection } from '@/lib/db';
-import { supabase } from '@/lib/supabase';
 import type { Section, Question } from '@/lib/db';
 
 export default function AdminQuestionBank() {
@@ -78,21 +77,28 @@ export default function AdminQuestionBank() {
     }
 
     try {
-      const { error } = await supabase.from('questions').insert({
-        section_id: selectedSection,
-        round_type: selectedRound,
-        content: formData.content,
-        answer_type: formData.answer_type,
-        option_a: formData.answer_type === 'mcq' ? formData.option_a : null,
-        option_b: formData.answer_type === 'mcq' ? formData.option_b : null,
-        option_c: formData.answer_type === 'mcq' ? formData.option_c : null,
-        option_d: formData.answer_type === 'mcq' ? formData.option_d : null,
-        correct_answer: formData.correct_answer,
-        points: formData.points,
-        difficulty_tier: formData.difficulty_tier,
+      const response = await fetch('/api/admin/questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          section_id: selectedSection,
+          round_type: selectedRound,
+          content: formData.content,
+          answer_type: formData.answer_type,
+          option_a: formData.answer_type === 'mcq' ? formData.option_a : null,
+          option_b: formData.answer_type === 'mcq' ? formData.option_b : null,
+          option_c: formData.answer_type === 'mcq' ? formData.option_c : null,
+          option_d: formData.answer_type === 'mcq' ? formData.option_d : null,
+          correct_answer: formData.correct_answer,
+          points: formData.points,
+          difficulty_tier: formData.difficulty_tier,
+        }),
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to add question');
+      }
 
       // Reload questions
       const questionsData = await getQuestionsBySection(selectedSection, selectedRound as any);
@@ -114,7 +120,7 @@ export default function AdminQuestionBank() {
 
       alert('Question added successfully');
     } catch (err) {
-      alert('Failed to add question');
+      alert(`Failed to add question: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
@@ -122,14 +128,19 @@ export default function AdminQuestionBank() {
     if (!confirm('Are you sure you want to delete this question?')) return;
 
     try {
-      const { error } = await supabase.from('questions').delete().eq('id', id);
+      const response = await fetch(`/api/admin/questions/${id}`, {
+        method: 'DELETE',
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete question');
+      }
 
       setQuestions(questions.filter((q) => q.id !== id));
       alert('Question deleted');
     } catch (err) {
-      alert('Failed to delete question');
+      alert(`Failed to delete question: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
@@ -172,8 +183,7 @@ export default function AdminQuestionBank() {
       }
 
       const rows = lines.slice(1);
-      let successCount = 0;
-      const errors: string[] = [];
+      const rowsData: any[] = [];
 
       for (let i = 0; i < rows.length; i++) {
         if (!rows[i].trim()) continue;
@@ -185,67 +195,42 @@ export default function AdminQuestionBank() {
           row[header] = cells[idx] || '';
         });
 
-        try {
-          // Validate row
-          if (!row.content || !row.correct_answer || !row.answer_type) {
-            errors.push(`Row ${i + 2}: Missing required fields`);
-            continue;
-          }
-
-          if (!['mcq', 'numeric'].includes(row.answer_type)) {
-            errors.push(`Row ${i + 2}: Invalid answer_type`);
-            continue;
-          }
-
-          // Find section by name
-          const section = sections.find((s) => s.name === row.section);
-          if (!section) {
-            errors.push(`Row ${i + 2}: Section not found`);
-            continue;
-          }
-
-          // Insert question
-          const { error } = await supabase.from('questions').insert({
-            section_id: section.id,
-            round_type: row.round_type,
-            difficulty_tier: row.difficulty_tier || null,
-            content: row.content,
-            answer_type: row.answer_type,
-            option_a: row.answer_type === 'mcq' ? row.option_a : null,
-            option_b: row.answer_type === 'mcq' ? row.option_b : null,
-            option_c: row.answer_type === 'mcq' ? row.option_c : null,
-            option_d: row.answer_type === 'mcq' ? row.option_d : null,
-            correct_answer: row.correct_answer,
-            points: parseInt(row.points) || 1,
-          });
-
-          if (error) {
-            errors.push(`Row ${i + 2}: ${error.message}`);
-            continue;
-          }
-
-          successCount++;
-        } catch (err) {
-          errors.push(`Row ${i + 2}: Parse error`);
-        }
+        rowsData.push(row);
       }
 
-      if (successCount > 0) {
-        setCsvSuccess(`${successCount} questions imported successfully`);
+      // Send to server-side API for bulk import
+      const response = await fetch('/api/admin/questions/bulk-import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rows: rowsData,
+          sections,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to import questions');
+      }
+
+      const results = await response.json();
+
+      if (results.successCount > 0) {
+        setCsvSuccess(`${results.successCount} questions imported successfully`);
 
         // Reload questions
         const questionsData = await getQuestionsBySection(selectedSection, selectedRound as any);
         setQuestions(questionsData);
       }
 
-      if (errors.length > 0) {
-        setCsvError(`Some rows failed:\n${errors.slice(0, 5).join('\n')}${errors.length > 5 ? '\n...' : ''}`);
+      if (results.errors.length > 0) {
+        setCsvError(`Some rows failed:\n${results.errors.slice(0, 5).join('\n')}${results.errors.length > 5 ? '\n...' : ''}`);
       }
 
       // Reset file input
       e.target.value = '';
     } catch (err) {
-      setCsvError('Failed to parse CSV file');
+      setCsvError(`Failed to import CSV: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
