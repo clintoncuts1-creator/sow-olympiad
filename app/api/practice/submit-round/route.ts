@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     // IDEMPOTENCY CHECK: Prevent duplicate certificates
     // Check if a certificate with same recipient_name, section, round_type, and mode was created in the last 10 seconds
     const tenSecondsAgo = new Date(Date.now() - 10000).toISOString();
-    const { data: existingCert, error: checkError } = await supabaseAdmin
+    const { data: existingCert } = await supabaseAdmin
       .from("certificates")
       .select("id")
       .eq("recipient_name", student_name)
@@ -79,7 +79,14 @@ export async function POST(request: NextRequest) {
 
     // Grade all responses
     let finalScore = 0;
-    const answers = [];
+    const answers: Array<{
+      question_id: string;
+      content: string;
+      student_answer: string;
+      correct_answer: string;
+      is_correct: boolean;
+      points_awarded: number;
+    }> = [];
 
     question_ids.forEach((qId: string, idx: number) => {
       const question = questions.find((q) => q.id === qId);
